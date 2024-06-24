@@ -39,6 +39,8 @@ exports.loginAdmin = async (req, res) => {
 
   try {
     const admin = await Admin.findOne({ email });
+    console.log("=========================");
+    console.log(admin);
     if (!admin) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -52,6 +54,7 @@ exports.loginAdmin = async (req, res) => {
 
     res.json({ 
       token, 
+      hospitalName:admin.hospitalName,
       role: admin.role, // Include the role in the response
       message: admin.role === 'superadmin' ? 'Super Admin logged in successfully' : 'Admin logged in successfully'
     });
