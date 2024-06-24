@@ -25,7 +25,6 @@ const adminSchema = new Schema({
     type: Date,
     required: true,
   },
-
   password: {
     type: String,
     required: true,
@@ -35,11 +34,15 @@ const adminSchema = new Schema({
     required: true,
     validate: {
       validator: function(value) {
-        // 'this' is the admin document
         return value === this.password;
       },
       message: 'Passwords do not match',
     },
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'superadmin'],
+    required: true,
   },
 });
 
@@ -48,8 +51,6 @@ adminSchema.pre('save', function(next) {
   const admin = this;
   if (!admin.isModified('password')) return next();
 
-  // Implement password hashing here
-  // For example, using bcrypt
   const bcrypt = require('bcrypt');
   const saltRounds = 10;
   bcrypt.hash(admin.password, saltRounds, function(err, hash) {
@@ -60,7 +61,6 @@ adminSchema.pre('save', function(next) {
   });
 });
 
-// Create the model from the schema
 const Admin = mongoose.model('Admin', adminSchema);
 
 module.exports = Admin;
